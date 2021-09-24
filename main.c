@@ -10,15 +10,15 @@
 int main(int argc, char **argv){
   // Définition des variaables
   int compteur=0;
-  char recette[TAILLE_MAX]= "";
+  char html[TAILLE_MAX]= "";
   char * p;
-  char *comp1;
-  char *comp2;
-
-
-
+  char* url="";
+  char* fichier_txt="";
+  char* nom_balise = "";
+  
+  //ouverture et extraction du HTML
   CURL *session = curl_easy_init();
-  curl_easy_setopt(session, CURLOPT_URL, "https://www.cuisine-etudiant.fr/recettes/page-2");
+  curl_easy_setopt(session, CURLOPT_URL, url);
   FILE * fp = fopen("./index_ccm.html", "w");
   curl_easy_setopt(session,  CURLOPT_WRITEDATA, fp);
   curl_easy_setopt(session,  CURLOPT_WRITEFUNCTION, fwrite);
@@ -29,13 +29,15 @@ int main(int argc, char **argv){
 
   //extraction des données
   fp = fopen("./index_ccm.html", "r+");
-  FILE *fichier = fopen("./recette.txt", "w");
-  //FILE *fichier = fopen("./recette.txt", "a+");
-  char* test = "recipes-list-title";
-  while(fgets(recette, TAILLE_MAX,fp)!=NULL){
+  //écriture lorsqu'il n'y a rien dans le fichier (ou si vous voulez supprimer les valeurs déja entrées)
+  FILE *fichier = fopen("./fichier_txt", "w");
+  //écriture lorsqu'il y a déja quelque chose dans le fichier et qu'on veux écrire à la suite (pas de suppression)
+  //FILE *fichier = fopen("./fichier_txt", "a+");
+ 
+  while(fgets(html, TAILLE_MAX,fp)!=NULL){
 
 
-    if ((p = strstr(recette, test)) != NULL){
+    if ((p = strstr(html, nom_balise)) != NULL){
 
       const char * separators = "<"">";
 
@@ -47,8 +49,7 @@ int main(int argc, char **argv){
 
 
 
-        if ((strstr(strToken,"/span") == NULL) && (strstr(strToken,test) == NULL)) {
-          // printf("caca\n" );
+        if ((strstr(strToken,"/span") == NULL) && (strstr(strToken,nom_balise) == NULL)) {
           printf ( "%s", strToken );
           fprintf(fichier, "%s", strToken);
         }
@@ -57,7 +58,7 @@ int main(int argc, char **argv){
         strToken = strtok ( NULL, separators );
       }
 
-      //printf("%s\n", recette);
+      //printf("%s\n", html);
       //*p = '\0';
       compteur++;
     }
