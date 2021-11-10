@@ -1,2 +1,4 @@
-# ExtractionHTTP
-Programme C qui va extraire des données d'un site voulu en fonction d'une balise que vous identifier.
+### ExtractionHTTP
+
+This program in C language, extract data from a website with a HTML tag that the user identify.
+
